@@ -32,3 +32,14 @@ def data_frame(data):
     return df
 
 
+
+
+def send_request(body,arn,sns):
+
+    # create an sns client
+
+    try:
+        sns.publish(TopicArn=arn, 
+            Message=body,)
+    except Exception as e:
+        print("Error {}".format(e))

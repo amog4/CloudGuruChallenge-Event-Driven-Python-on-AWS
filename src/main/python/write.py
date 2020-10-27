@@ -1,5 +1,6 @@
 import psycopg2
 from table_queries import *
+from read import send_request
   
 def db_connect(dbconfig):
 
@@ -41,21 +42,25 @@ def execute_many(conn,cur,query,rows):
 
 
 
-def insert_update_rows(cur,conn,row,df):
+def insert_update_rows(cur,conn,row,df,arn,sns):
     if row == []:
         fields = df.apply(tuple,axis=1).to_list()
         execute_many(conn = conn,cur = cur,query=insert_into,rows=fields)
         cur.close()
         conn.close()
-    elif row != [] :
+        send_request(body = f'fields inserted {len(fields)}', arn=arn,sns=sns)
+    elif row != []:
         max_date = select_query(conn = conn,cur = cur,query = select_max_date)
         if max_date != None:
             df_fields = df[df['date'] > str(max_date[0][0])]
-            print('no fields to insert')
+            
             if not df_fields.empty:
                 fields = df_fields.apply(tuple,axis=1).to_list()
                 execute_many(conn = conn,cur = cur,query=insert_into,rows=fields)
-                print('fields inserted')  
+                mess1 = f'fields inserted {len(fields)}'
+            else:
+                mess1 = 'No fields found for insert'
+
             recovered_nulls = select_query(conn = conn,cur = cur,query = select_null)
             if recovered_nulls != []:
                 null_df = pd.DataFrame(recovered_nulls, 
@@ -67,11 +72,11 @@ def insert_update_rows(cur,conn,row,df):
 
                 df_null = null_df.merge(df,left_on='date',right_on='date',suffixes=('_left', '_right'))
                 
-                
+                mess2 = f'Fields to be updated {len(df_null)}'
                 df_null = df_null[df_null['recovered_right'].notnull()]
                 
                 if not df_null.empty:
-                    print('yes')
+                    
                     for index,_ in df_null.iterrows():
                         
                         update_query = f"""
@@ -82,9 +87,14 @@ def insert_update_rows(cur,conn,row,df):
                                 """
 
                         execute_query(conn = conn,cur=cur,query = update_query  )
-                    print('values updated')  
+                    mess3 = f'Fields updated {len(df_null)}'
                 else:
-                    print('no values to update')
+                    mess3 = 'No Fields to be Updated'
+                mess2 = mess2 + ', ' + mess3
+            else:
+                mess2 = 'No Fields to be Updated'
+
+            send_request(body = mess1+ ', ' + mess2, arn= arn,sns= sns)    
         cur.close()
         conn.close()
     else:
