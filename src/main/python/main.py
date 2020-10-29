@@ -24,7 +24,7 @@ sns = boto3.client('sns',aws_access_key_id =Access_key_ID ,
 aws_secret_access_key =Secret_access_key )
 
 def main(event, context):
-    
+    send_request(body = 'Failed to load NYT dataset', arn=arn,sns=sns)
     dbconfig = config['DB']
     
     conn ,cur =db_connect(dbconfig=dbconfig)
@@ -37,7 +37,7 @@ def main(event, context):
     else:
         row = select_query(conn = conn,cur = cur,query = select_table)
 
-    df = transform_df(NYT =NYT,headers =headers,TIMESERIES=TIMESERIES)
+    df = transform_df(NYT =NYT,headers =headers,TIMESERIES=TIMESERIES,arn=arn,sns= sns)
     insert_update_rows(cur = cur,conn = conn,row= row,df = df,arn=arn,sns= sns)
 
 
