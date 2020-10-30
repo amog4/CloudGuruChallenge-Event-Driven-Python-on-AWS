@@ -18,10 +18,8 @@ NYT = config['URL']['NYT']
 
 arn = os.environ['sns_topic']
 
-Access_key_ID = config['ARN']['Access_key_ID']
-Secret_access_key = config['ARN']['Secret_access_key']
-sns = boto3.client('sns',aws_access_key_id =Access_key_ID ,
-aws_secret_access_key =Secret_access_key )
+
+sns = boto3.client('sns')
 
 def main(event, context):
     
@@ -38,7 +36,7 @@ def main(event, context):
         row = select_query(conn = conn,cur = cur,query = select_table)
 
     dff_nyt,dff_times = data_df(NYT =NYT,headers =None,TIMESERIES=TIMESERIES,arn=arn,sns= sns)
-    df = transform_df(dff_nyt=dff_nyt,dff_times=dff_times,arn=None,sns=None)
+    df = transform_df(dff_nyt=dff_nyt,dff_times=dff_times)
     insert_update_rows(cur = cur,conn = conn,row= row,df = df,arn=arn,sns= sns)
 
 
