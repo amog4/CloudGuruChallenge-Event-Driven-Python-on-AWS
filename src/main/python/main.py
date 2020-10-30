@@ -1,4 +1,4 @@
-from transform import transform_df
+from transform import transform_df, data_df
 from table_queries import *
 from write import *
 import configparser
@@ -37,7 +37,8 @@ def main(event, context):
     else:
         row = select_query(conn = conn,cur = cur,query = select_table)
 
-    df = transform_df(NYT =NYT,headers =None,TIMESERIES=TIMESERIES,arn=arn,sns= sns)
+    dff_nyt,dff_times = data_df(NYT =NYT,headers =None,TIMESERIES=TIMESERIES,arn=arn,sns= sns)
+    df = transform_df(dff_nyt=dff_nyt,dff_times=dff_times,arn=None,sns=None)
     insert_update_rows(cur = cur,conn = conn,row= row,df = df,arn=arn,sns= sns)
 
 
