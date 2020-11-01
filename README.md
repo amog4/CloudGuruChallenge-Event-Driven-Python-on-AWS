@@ -1,6 +1,6 @@
 # CloudGuruChallenge-Event-Driven-Python-on-AWS
 
-*ETL JOB. Create a Python compute job that runs on a daily schedule. You could do this by creating a Python Lambda function, and then triggering it from a once-daily CloudWatch rule. Alternatively, you could create a scheduled Fargate task, or look into scheduling a job using AWS Glue. The only requirement is that the underlying compute must be triggered once daily, not on a continuously polling server.
+  * ETL JOB. Create a Python compute job that runs on a daily schedule. You could do this by creating a Python Lambda function, and then triggering it from a once-daily CloudWatch rule. Alternatively, you could create a scheduled Fargate task, or look into scheduling a job using AWS Glue. The only requirement is that the underlying compute must be triggered once daily, not on a continuously polling server.
 
 *EXTRACTION. In your Python code, download this CSV file from Github. (This is a daily dump of US COVID-19 data from a repository maintained by the New York Times. Every day, the file updates with an additional row of data.) Load the data into an object in memory.
 
