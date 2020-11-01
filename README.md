@@ -26,4 +26,4 @@ If the data contains unexpected or malformed input, your code should fail gracef
 
 *IaC. Make sure your infrastructure (Lambda function, CloudWatch rule, SNS trigger, database, etc) is defined in code (CloudFormation, Terraform, or similar)
 
-* I have also created quicksight dashboard
+*I have also created quicksight dashboard
