@@ -1,6 +1,7 @@
 import psycopg2
 from table_queries import *
 from read import send_request
+import pandas as pd
   
 def db_connect(dbconfig):
 
